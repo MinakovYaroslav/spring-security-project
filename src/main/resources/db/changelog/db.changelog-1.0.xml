@@ -1,0 +1,573 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- Create tables -->
+
+    <changeSet id="createUsersTable" author="yaroslav.minakov" runOnChange="true">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="users"/>
+            </not>
+        </preConditions>
+        <createTable tableName="users">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="username" type="VARCHAR(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="first_name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="specialty" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone_number" type="VARCHAR(20)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="created" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone_verified" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="createRolesTable" author="yaroslav.minakov" runOnChange="true">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="roles"/>
+            </not>
+        </preConditions>
+        <createTable tableName="roles">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="createSkillsTable" author="yaroslav.minakov" runOnChange="true">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="skills"/>
+            </not>
+        </preConditions>
+        <createTable tableName="skills">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="createTeamsTable" author="yaroslav.minakov" runOnChange="true">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="teams"/>
+            </not>
+        </preConditions>
+        <createTable tableName="teams">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="createProjectsTable" author="yaroslav.minakov" runOnChange="true">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="projects"/>
+            </not>
+        </preConditions>
+        <createTable tableName="projects">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="budget" type="DECIMAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="createResponseCodesTable" author="yaroslav.minakov" runOnChange="true">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="response_codes"/>
+            </not>
+        </preConditions>
+        <createTable tableName="response_codes">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="code" type="VARCHAR(8)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="createCustomersTable" author="yaroslav.minakov" runOnChange="true">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="customers"/>
+            </not>
+        </preConditions>
+        <createTable tableName="customers">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="createUserRolesTable" author="yaroslav.minakov" runOnChange="true">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="user_roles"/>
+            </not>
+        </preConditions>
+        <createTable tableName="user_roles">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="FK_user_roles_user_id"
+                             referencedTableName="users" referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+            <column name="role_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="FK_user_roles_role_id"
+                             referencedTableName="roles" referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="createUserSkillsTable" author="yaroslav.minakov" runOnChange="true">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="user_skills"/>
+            </not>
+        </preConditions>
+        <createTable tableName="user_skills">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="FK_user_skills_user_id"
+                             referencedTableName="users" referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+            <column name="skill_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="FK_user_skills_skill_id"
+                             referencedTableName="skills" referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="createTeamUsersTable" author="yaroslav.minakov" runOnChange="true">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="team_users"/>
+            </not>
+        </preConditions>
+        <createTable tableName="team_users">
+            <column name="team_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="FK_team_users_team_id"
+                             referencedTableName="teams" referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="FK_team_users_user_id"
+                             referencedTableName="users" referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="createProjectTeamsTable" author="yaroslav.minakov" runOnChange="true">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="project_teams"/>
+            </not>
+        </preConditions>
+        <createTable tableName="project_teams">
+            <column name="project_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="FK_project_teams_project_id"
+                             referencedTableName="projects" referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+            <column name="team_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="FK_project_teams_team_id"
+                             referencedTableName="teams" referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="createCustomerProjectsTable" author="yaroslav.minakov" runOnChange="true">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="customer_projects"/>
+            </not>
+        </preConditions>
+        <createTable tableName="customer_projects">
+            <column name="customer_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="FK_customer_projects_customer_id"
+                             referencedTableName="customers" referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+            <column name="project_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="FK_customer_projects_project_id"
+                             referencedTableName="projects" referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!--Insert data-->
+
+    <changeSet id="updateUsersTable" author="yaroslav.minakov" runOnChange="true">
+        <insert tableName="users">
+            <column name="id" value="1"/>
+            <column name="username" value="KobeSanchez"/>
+            <column name="password" value="$2a$10$jx9b8oleJKkXFMXLDibwW.i/h.vS7B7ec4tOxw4Ro6GsJpI6Fmaqm"/>
+            <column name="first_name" value="Kobe"/>
+            <column name="last_name" value="Sanchez"/>
+            <column name="specialty" value="Junior Java Developer"/>
+            <column name="phone_number" value="+1234567890"/>
+        </insert>
+        <insert tableName="users">
+            <column name="id" value="2"/>
+            <column name="username" value="LeonardoCaldwell"/>
+            <column name="password" value="$2a$10$jx9b8oleJKkXFMXLDibwW.i/h.vS7B7ec4tOxw4Ro6GsJpI6Fmaqm"/>
+            <column name="first_name" value="Leonardo"/>
+            <column name="last_name" value="Caldwell"/>
+            <column name="specialty" value="Junior Java Developer"/>
+            <column name="phone_number" value="+2345678901"/>
+        </insert>
+        <insert tableName="users">
+            <column name="id" value="3"/>
+            <column name="username" value="JaquelineGonzales"/>
+            <column name="password" value="$2a$10$jx9b8oleJKkXFMXLDibwW.i/h.vS7B7ec4tOxw4Ro6GsJpI6Fmaqm"/>
+            <column name="first_name" value="Jaqueline"/>
+            <column name="last_name" value="Gonzales"/>
+            <column name="specialty" value="Middle Java Developer"/>
+            <column name="phone_number" value="+3456789012"/>
+        </insert>
+        <insert tableName="users">
+            <column name="id" value="4"/>
+            <column name="username" value="KameronMosley"/>
+            <column name="password" value="$2a$10$jx9b8oleJKkXFMXLDibwW.i/h.vS7B7ec4tOxw4Ro6GsJpI6Fmaqm"/>
+            <column name="first_name" value="Kameron"/>
+            <column name="last_name" value="Mosley"/>
+            <column name="specialty" value="Middle Java Developer"/>
+            <column name="phone_number" value="+4567890123"/>
+        </insert>
+        <insert tableName="users">
+            <column name="id" value="5"/>
+            <column name="username" value="DonnaMejia"/>
+            <column name="password" value="$2a$10$jx9b8oleJKkXFMXLDibwW.i/h.vS7B7ec4tOxw4Ro6GsJpI6Fmaqm"/>
+            <column name="first_name" value="Donna"/>
+            <column name="last_name" value="Mejia"/>
+            <column name="specialty" value="Senior Java Developer"/>
+            <column name="phone_number" value="+5678901234"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="updateRolesTable" author="yaroslav.minakov" runOnChange="true">
+        <insert tableName="roles">
+            <column name="id" value="1"/>
+            <column name="name" value="ROLE_USER"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="id" value="2"/>
+            <column name="name" value="ROLE_MODERATOR"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="id" value="3"/>
+            <column name="name" value="ROLE_ADMIN"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="updateSkillsTable" author="yaroslav.minakov" runOnChange="true">
+        <insert tableName="skills">
+            <column name="id" value="1"/>
+            <column name="name" value="Java 8"/>
+        </insert>
+        <insert tableName="skills">
+            <column name="id" value="2"/>
+            <column name="name" value="Java 7"/>
+        </insert>
+        <insert tableName="skills">
+            <column name="id" value="3"/>
+            <column name="name" value="Spring"/>
+        </insert>
+        <insert tableName="skills">
+            <column name="id" value="4"/>
+            <column name="name" value="Hibernate"/>
+        </insert>
+        <insert tableName="skills">
+            <column name="id" value="5"/>
+            <column name="name" value="Maven"/>
+        </insert>
+        <insert tableName="skills">
+            <column name="id" value="6"/>
+            <column name="name" value="MySQL"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="updateTeamsTable" author="yaroslav.minakov" runOnChange="true">
+        <insert tableName="teams">
+            <column name="id" value="1"/>
+            <column name="name" value="Team 1"/>
+        </insert>
+        <insert tableName="teams">
+            <column name="id" value="2"/>
+            <column name="name" value="Team 2"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="updateCustomersTable" author="yaroslav.minakov" runOnChange="true">
+        <insert tableName="customers">
+            <column name="id" value="1"/>
+            <column name="name" value="Customer 1"/>
+        </insert>
+        <insert tableName="customers">
+            <column name="id" value="2"/>
+            <column name="name" value="Customer 2"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="updateProjectsTable" author="yaroslav.minakov" runOnChange="true">
+        <insert tableName="projects">
+            <column name="id" value="1"/>
+            <column name="name" value="Project 1"/>
+            <column name="budget" value="1000"/>
+        </insert>
+        <insert tableName="projects">
+            <column name="id" value="2"/>
+            <column name="name" value="Project 2"/>
+            <column name="budget" value="1500"/>
+        </insert>
+    </changeSet>
+    <changeSet id="updateProjectsTable" author="yaroslav.minakov" runOnChange="true">
+        <insert tableName="projects">
+            <column name="id" value="1"/>
+            <column name="name" value="Project 1"/>
+            <column name="budget" value="1000"/>
+        </insert>
+        <insert tableName="projects">
+            <column name="id" value="2"/>
+            <column name="name" value="Project 2"/>
+            <column name="budget" value="1500"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="updateUserRolesTable" author="yaroslav.minakov" runOnChange="true">
+        <insert tableName="user_roles">
+            <column name="user_id" value="1"/>
+            <column name="role_id" value="1"/>
+        </insert>
+        <insert tableName="user_roles">
+            <column name="user_id" value="2"/>
+            <column name="role_id" value="1"/>
+        </insert>
+        <insert tableName="user_roles">
+            <column name="user_id" value="3"/>
+            <column name="role_id" value="1"/>
+        </insert>
+        <insert tableName="user_roles">
+            <column name="user_id" value="3"/>
+            <column name="role_id" value="2"/>
+        </insert>
+        <insert tableName="user_roles">
+            <column name="user_id" value="4"/>
+            <column name="role_id" value="1"/>
+        </insert>
+        <insert tableName="user_roles">
+            <column name="user_id" value="4"/>
+            <column name="role_id" value="2"/>
+        </insert>
+        <insert tableName="user_roles">
+            <column name="user_id" value="5"/>
+            <column name="role_id" value="1"/>
+        </insert>
+        <insert tableName="user_roles">
+            <column name="user_id" value="5"/>
+            <column name="role_id" value="2"/>
+        </insert>
+        <insert tableName="user_roles">
+            <column name="user_id" value="5"/>
+            <column name="role_id" value="3"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="updateUserSkillsTable" author="yaroslav.minakov" runOnChange="true">
+        <insert tableName="user_skills">
+            <column name="user_id" value="1"/>
+            <column name="skill_id" value="1"/>
+        </insert>
+        <insert tableName="user_skills">
+            <column name="user_id" value="2"/>
+            <column name="skill_id" value="1"/>
+        </insert>
+        <insert tableName="user_skills">
+            <column name="user_id" value="3"/>
+            <column name="skill_id" value="1"/>
+        </insert>
+        <insert tableName="user_skills">
+            <column name="user_id" value="4"/>
+            <column name="skill_id" value="1"/>
+        </insert>
+        <insert tableName="user_skills">
+            <column name="user_id" value="4"/>
+            <column name="skill_id" value="5"/>
+        </insert>
+        <insert tableName="user_skills">
+            <column name="user_id" value="4"/>
+            <column name="skill_id" value="6"/>
+        </insert>
+        <insert tableName="user_skills">
+            <column name="user_id" value="5"/>
+            <column name="skill_id" value="2"/>
+        </insert>
+        <insert tableName="user_skills">
+            <column name="user_id" value="5"/>
+            <column name="skill_id" value="1"/>
+        </insert>
+        <insert tableName="user_skills">
+            <column name="user_id" value="5"/>
+            <column name="skill_id" value="3"/>
+        </insert>
+        <insert tableName="user_skills">
+            <column name="user_id" value="5"/>
+            <column name="skill_id" value="4"/>
+        </insert>
+        <insert tableName="user_skills">
+            <column name="user_id" value="5"/>
+            <column name="skill_id" value="5"/>
+        </insert>
+        <insert tableName="user_skills">
+            <column name="user_id" value="5"/>
+            <column name="skill_id" value="6"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="updateTeamUsersTable" author="yaroslav.minakov" runOnChange="true">
+        <insert tableName="team_users">
+            <column name="team_id" value="1"/>
+            <column name="user_id" value="1"/>
+        </insert>
+        <insert tableName="team_users">
+            <column name="team_id" value="1"/>
+            <column name="user_id" value="3"/>
+        </insert>
+        <insert tableName="team_users">
+            <column name="team_id" value="2"/>
+            <column name="user_id" value="2"/>
+        </insert>
+        <insert tableName="team_users">
+            <column name="team_id" value="2"/>
+            <column name="user_id" value="4"/>
+        </insert>
+        <insert tableName="team_users">
+            <column name="team_id" value="2"/>
+            <column name="user_id" value="5"/>
+        </insert>
+        <insert tableName="team_users">
+            <column name="team_id" value="1"/>
+            <column name="user_id" value="5"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="updateCustomerProjectsTable" author="yaroslav.minakov" runOnChange="true">
+        <insert tableName="customer_projects">
+            <column name="customer_id" value="1"/>
+            <column name="project_id" value="1"/>
+        </insert>
+        <insert tableName="customer_projects">
+            <column name="customer_id" value="2"/>
+            <column name="project_id" value="2"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="updateProjectTeamsTable" author="yaroslav.minakov" runOnChange="true">
+        <insert tableName="project_teams">
+            <column name="project_id" value="1"/>
+            <column name="team_id" value="1"/>
+        </insert>
+        <insert tableName="project_teams">
+            <column name="project_id" value="2"/>
+            <column name="team_id" value="2"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
