@@ -13,4 +13,5 @@ public interface CustomerService {
     List<Customer> findAll();
     Customer save(Customer customer);
     Customer findByIdFetchProjects(Long customerId);
+    List<Customer> findAllFetchProjects();
 }
