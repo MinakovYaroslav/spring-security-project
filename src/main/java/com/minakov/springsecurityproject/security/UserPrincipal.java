@@ -20,7 +20,6 @@ public final class UserPrincipal implements UserDetails {
     private final String lastName;
     private final String specialty;
     private final String password;
-    private final Boolean status;
     private final Boolean phoneVerified;
     private final Collection<? extends GrantedAuthority> authorities;
 
@@ -56,6 +55,6 @@ public final class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return status && phoneVerified;
+        return phoneVerified;
     }
 }
