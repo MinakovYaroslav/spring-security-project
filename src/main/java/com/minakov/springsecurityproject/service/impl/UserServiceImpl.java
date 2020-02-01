@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findAll() {//TODO FIND BY STATUS
+    public List<User> findAll() {
         List<User> result = this.userRepository.findAll();
         log.info("IN findAll - users: {}", result);
         return result;
@@ -56,15 +56,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public User registration(User user) {
         log.info("IN registration - user: {}", user);
-        user.setStatus(false);
+        user.setPhoneVerified(true);
         return save(user);
-    }
-
-    @Override
-    public Boolean exist(Long userId) {
-        boolean result = userRepository.existsById(userId);
-        log.info("IN exist - user: {} with id {}", result, userId);
-        return result;
     }
 
     @Override
