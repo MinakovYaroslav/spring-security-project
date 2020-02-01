@@ -61,6 +61,7 @@ public class TwilioVerificationServiceImpl implements VerificationService {
     @Override
     @Transactional
     public VerificationResult startVerification(User user) {
+        log.info("IN startVerification - user: {} ", user);
         try {
             ResponseCode responseCode = ResponseCode.builder()
                     .userId(user.getId())
