@@ -19,6 +19,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("FROM User u JOIN FETCH u.skills WHERE u.id =:userId")
     User findByIdFetchSkills(@Param("userId") Long userId);
 
-    @Query("FROM User u JOIN FETCH u.skills")
+    @Query("FROM User u JOIN FETCH u.skills ") //TODO returns 12 users instead of 5
     List<User> findAllFetchSkills();
 }
