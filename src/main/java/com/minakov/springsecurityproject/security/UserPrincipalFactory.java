@@ -20,7 +20,6 @@ public final class UserPrincipalFactory {
                 .lastName(user.getLastName())
                 .specialty(user.getSpecialty())
                 .password(user.getPassword())
-                .status(user.getStatus())
                 .phoneVerified(user.getPhoneVerified())
                 .authorities(mapToGrantedAuthorities(user.getRoles()))
                 .build();
