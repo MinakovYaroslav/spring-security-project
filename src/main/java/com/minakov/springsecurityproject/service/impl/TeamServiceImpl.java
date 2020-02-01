@@ -27,7 +27,7 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public Team findById(Long teamId) {
         Team result = this.teamRepository.findById(teamId).orElse(null);
-        log.info("IN save - team: {} ", result);
+        log.info("IN findById - team: {} ", result);
         return result;
     }
 
@@ -43,6 +43,20 @@ public class TeamServiceImpl implements TeamService {
     public Team save(Team team) {
         Team result = this.teamRepository.save(team);
         log.info("IN save - team: {} ", result);
+        return result;
+    }
+
+    @Override
+    public List<Team> findAllFetchUsers() {
+        List<Team> result = this.teamRepository.findAllFetchUsers();
+        log.info("IN findAllFetchUsers - teams: {}", result);
+        return result;
+    }
+
+    @Override
+    public Team findByIdFetchUsers(Long teamId) {
+        Team result = this.teamRepository.findByIdFetchUsers(teamId);
+        log.info("IN findByIdFetchUsers - team: {} ", result);
         return result;
     }
 }
