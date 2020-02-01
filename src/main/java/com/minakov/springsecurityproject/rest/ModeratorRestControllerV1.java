@@ -1,6 +1,6 @@
 package com.minakov.springsecurityproject.rest;
 
-import com.minakov.springsecurityproject.dto.admin.*;
+import com.minakov.springsecurityproject.dto.*;
 import com.minakov.springsecurityproject.model.*;
 import com.minakov.springsecurityproject.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,9 @@ import java.util.stream.Collectors;
  * @author Yaroslav Minakov
  */
 @RestController
-@RequestMapping({"/api/v1/admin/", "/api/v1/moderator/"})
+@RequestMapping({
+        "/api/v1/admin/",
+        "/api/v1/moderator/"})
 public class ModeratorRestControllerV1 {
 
     private final SkillService skillService;
@@ -26,73 +28,37 @@ public class ModeratorRestControllerV1 {
     private final TeamService teamService;
     private final ProjectService projectService;
     private final CustomerService customerService;
-    private final UserService userService;
 
     @Autowired
     public ModeratorRestControllerV1(RoleService roleService,
                                      SkillService skillService,
                                      TeamService teamService,
                                      ProjectService projectService,
-                                     CustomerService customerService,
-                                     UserService userService) {
+                                     CustomerService customerService) {
         this.roleService = roleService;
         this.skillService = skillService;
         this.teamService = teamService;
         this.projectService = projectService;
         this.customerService = customerService;
-        this.userService = userService;
-    }
-
-    @GetMapping(value = "users", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<AdminUserDto>> getUsers() {
-        List<User> users = this.userService.findAllFetchSkills();
-
-        if (users.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        List<AdminUserDto> adminUsersDto = users.stream()
-                .map(AdminUserDto::toDto)
-                .collect(Collectors.toList());
-
-        return new ResponseEntity<>(adminUsersDto, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "users/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AdminUserDto> getUser(@PathVariable("id") Long userId) {
-
-        if (userId == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        User user = this.userService.findByIdFetchSkills(userId);
-
-        if (user == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        AdminUserDto adminUserDto = AdminUserDto.toDto(user);
-
-        return new ResponseEntity<>(adminUserDto, HttpStatus.OK);
     }
 
     @GetMapping(value = "roles", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<AdminRoleDto>> getRoles() {
+    public ResponseEntity<List<RoleDto>> getRoles() {
         List<Role> roles = this.roleService.findAll();
 
         if (roles.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        List<AdminRoleDto> adminsRoleDto = roles.stream()
-                .map(AdminRoleDto::toDto)
+        List<RoleDto> adminsRoleDto = roles.stream()
+                .map(RoleDto::toDto)
                 .collect(Collectors.toList());
 
         return new ResponseEntity<>(adminsRoleDto, HttpStatus.OK);
     }
 
     @GetMapping(value = "roles/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AdminRoleDto> getRole(@PathVariable("id") Long roleId) {
+    public ResponseEntity<RoleDto> getRole(@PathVariable("id") Long roleId) {
 
         if (roleId == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -104,288 +70,203 @@ public class ModeratorRestControllerV1 {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        AdminRoleDto adminRoleDto = AdminRoleDto.toDto(role);
+        RoleDto roleDto = RoleDto.toDto(role);
 
-        return new ResponseEntity<>(adminRoleDto, HttpStatus.OK);
+        return new ResponseEntity<>(roleDto, HttpStatus.OK);
     }
 
     @PutMapping(value = "roles/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AdminRoleDto> updateRole(@RequestBody @Valid AdminRoleDto adminRoleDto, @PathVariable("id") Long roleId) {
+    public ResponseEntity<RoleDto> updateRole(@RequestBody @Valid RoleDto roleDto, @PathVariable("id") Long roleId) {
 
-        if (adminRoleDto == null || roleId == null) {
+        if (roleDto == null || roleId == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        if (!roleDto.getId().equals(roleId)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Role role = this.roleService.findById(roleId);
+
+        if (role == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         HttpHeaders headers = new HttpHeaders();
-        Role role = adminRoleDto.toEntity();
+        role = roleDto.toEntity(role);
 
         this.roleService.save(role);
 
-        return new ResponseEntity<>(adminRoleDto, headers, HttpStatus.OK);
+        return new ResponseEntity<>(roleDto, headers, HttpStatus.OK);
     }
 
     @PostMapping(value = "roles", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AdminRoleDto> createRole(@RequestBody @Valid AdminRoleDto adminRoleDto) {
+    public ResponseEntity<RoleDto> createRole(@RequestBody @Valid RoleDto roleDto) {
 
-        if (adminRoleDto == null) {
+        if (roleDto == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         HttpHeaders headers = new HttpHeaders();
-        Role role = adminRoleDto.toEntity();
-        adminRoleDto = AdminRoleDto.toDto(this.roleService.save(role));
-        //TODO CREATE TEAM WITH STATUS FALSE
-        //TODO CREATE 2 METHODS FINDALL FOR ALL DTOs (FINDALL WITH STATUS FALSE AND FINDALL WITH STATUS TRUE)
+        Role role = roleDto.toEntity();
+        roleDto = RoleDto.toDto(this.roleService.save(role));
 
-        return new ResponseEntity<>(adminRoleDto, headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(roleDto, headers, HttpStatus.CREATED);
     }
 
-    @GetMapping(value = "skills", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<AdminSkillDto>> getSkills() {
-        List<Skill> skills = this.skillService.findAll();
+    @PutMapping(value = "skills/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<SkillDto> updateSkill(@RequestBody @Valid SkillDto skillDto, @PathVariable("id") Long skillId) {
 
-        if (skills.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        if (skillDto == null || skillId == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        List<AdminSkillDto> adminSkillsDto = skills.stream()
-                .map(AdminSkillDto::toDto)
-                .collect(Collectors.toList());
-
-        return new ResponseEntity<>(adminSkillsDto, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "skills/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AdminSkillDto> getSkill(@PathVariable("id") Long skillId) {
-
-        if (skillId == null) {
+        if (!skillDto.getId().equals(skillId)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         Skill skill = this.skillService.findById(skillId);
 
         if (skill == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        AdminSkillDto adminSkillDto = AdminSkillDto.toDto(skill);
-
-        return new ResponseEntity<>(adminSkillDto, HttpStatus.OK);
-    }
-
-    @PutMapping(value = "skills/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AdminSkillDto> updateSkill(@RequestBody @Valid AdminSkillDto adminSkillDto, @PathVariable("id") Long skillId) {
-
-        if (adminSkillDto == null || skillId == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         HttpHeaders headers = new HttpHeaders();
-        Skill skill = adminSkillDto.toEntity();
+        skill = skillDto.toEntity(skill);
 
         this.skillService.save(skill);
 
-        return new ResponseEntity<>(adminSkillDto, headers, HttpStatus.OK);
+        return new ResponseEntity<>(skillDto, headers, HttpStatus.OK);
     }
 
     @PostMapping(value = "skills", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AdminSkillDto> createSkill(@RequestBody @Valid AdminSkillDto adminSkillDto) {
+    public ResponseEntity<SkillDto> createSkill(@RequestBody @Valid SkillDto skillDto) {
 
-        if (adminSkillDto == null) {
+        if (skillDto == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         HttpHeaders headers = new HttpHeaders();
-        Skill skill = adminSkillDto.toEntity();
-        adminSkillDto = AdminSkillDto.toDto(this.skillService.save(skill));
+        Skill skill = skillDto.toEntity();
+        skillDto = SkillDto.toDto(this.skillService.save(skill));
 
-        return new ResponseEntity<>(adminSkillDto, headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(skillDto, headers, HttpStatus.CREATED);
     }
 
-    @GetMapping(value = "teams", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<AdminTeamDto>> getTeams() {
-        List<Team> teams = this.teamService.findAll();
+    @PutMapping(value = "teams/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<TeamDto> updateTeam(@RequestBody @Valid TeamDto teamDto, @PathVariable("id") Long teamId) {
 
-        if (teams.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        if (teamDto == null || teamId == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        List<AdminTeamDto> adminTeamsDto = teams.stream()
-                .map(AdminTeamDto::toDto)
-                .collect(Collectors.toList());
-
-        return new ResponseEntity<>(adminTeamsDto, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "teams/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AdminTeamDto> getTeam(@PathVariable("id") Long teamId) {
-
-        if (teamId == null) {
+        if (!teamDto.getId().equals(teamId)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         Team team = this.teamService.findById(teamId);
 
         if (team == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        AdminTeamDto adminTeamDto = AdminTeamDto.toDto(team);
-
-        return new ResponseEntity<>(adminTeamDto, HttpStatus.OK);
-    }
-
-    @PutMapping(value = "teams/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AdminTeamDto> updateTeam(@RequestBody @Valid AdminTeamDto adminTeamDto, @PathVariable("id") Long teamId) {
-
-        if (adminTeamDto == null || teamId == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         HttpHeaders headers = new HttpHeaders();
-        Team team = adminTeamDto.toEntity();
+        team = teamDto.toEntity(team);
 
         this.teamService.save(team);
 
-        return new ResponseEntity<>(adminTeamDto, headers, HttpStatus.OK);
+        return new ResponseEntity<>(teamDto, headers, HttpStatus.OK);
     }
 
     @PostMapping(value = "teams", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AdminTeamDto> createTeam(@RequestBody @Valid AdminTeamDto adminTeamDto) {
+    public ResponseEntity<TeamDto> createTeam(@RequestBody @Valid TeamDto teamDto) {
 
-        if (adminTeamDto == null) {
+        if (teamDto == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         HttpHeaders headers = new HttpHeaders();
-        Team team = adminTeamDto.toEntity();
-        adminTeamDto = AdminTeamDto.toDto(this.teamService.save(team));
+        Team team = teamDto.toEntity();
+        teamDto = TeamDto.toDto(this.teamService.save(team));
 
-        return new ResponseEntity<>(adminTeamDto, headers, HttpStatus.CREATED);
-    }
-
-    @GetMapping(value = "projects", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<AdminProjectDto>> getProjects() {
-        List<Project> projects = this.projectService.findAllFetchTeams();
-
-        if (projects.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        List<AdminProjectDto> adminProjectsDto = projects.stream()
-                .map(AdminProjectDto::toDto)
-                .collect(Collectors.toList());
-
-        return new ResponseEntity<>(adminProjectsDto, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "projects/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AdminProjectDto> getProject(@PathVariable("id") Long projectId) {
-
-        if (projectId == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        Project project = this.projectService.findByIdFetchTeams(projectId);
-
-        if (project == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        AdminProjectDto adminProjectDto = AdminProjectDto.toDto(project);
-
-        return new ResponseEntity<>(adminProjectDto, HttpStatus.OK);
+        return new ResponseEntity<>(teamDto, headers, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "projects/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AdminProjectDto> updateProject(@RequestBody @Valid AdminProjectDto adminProjectDto, @PathVariable("id") Long projectId) {
+    public ResponseEntity<ProjectDto> updateProject(@RequestBody @Valid ProjectDto projectDto, @PathVariable("id") Long projectId) {
 
-        if (adminProjectDto == null || projectId == null) {
+        if (projectDto == null || projectId == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        if (!projectDto.getId().equals(projectId)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Project project = this.projectService.findById(projectId);
+
+        if (project == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         HttpHeaders headers = new HttpHeaders();
-        Project project = adminProjectDto.toEntity();
+        project = projectDto.toEntity(project);
 
         this.projectService.save(project);
 
-        return new ResponseEntity<>(adminProjectDto, headers, HttpStatus.OK);
+        return new ResponseEntity<>(projectDto, headers, HttpStatus.OK);
     }
 
     @PostMapping(value = "projects", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AdminProjectDto> createProject(@RequestBody @Valid AdminProjectDto adminProjectDto) {
+    public ResponseEntity<ProjectDto> createProject(@RequestBody @Valid ProjectDto projectDto) {
 
-        if (adminProjectDto == null) {
+        if (projectDto == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         HttpHeaders headers = new HttpHeaders();
-        Project project = adminProjectDto.toEntity();
-        adminProjectDto = AdminProjectDto.toDto(this.projectService.save(project));
+        Project project = projectDto.toEntity();
+        projectDto = ProjectDto.toDto(this.projectService.save(project));
 
-        return new ResponseEntity<>(adminProjectDto, headers, HttpStatus.CREATED);
-    }
-
-    @GetMapping(value = "customers", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<AdminCustomerDto>> getCustomers() {
-        List<Customer> customers = this.customerService.findAll();
-
-        if (customers.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        List<AdminCustomerDto> adminCustomersDto = customers.stream()
-                .map(AdminCustomerDto::toDto)
-                .collect(Collectors.toList());
-
-        return new ResponseEntity<>(adminCustomersDto, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "customers/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AdminCustomerDto> getCustomer(@PathVariable("id") Long customerId) {
-
-        if (customerId == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        Customer customer = this.customerService.findByIdFetchProjects(customerId); //TODO LazyInitializationException
-        System.out.println();
-
-        if (customer == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        AdminCustomerDto adminCustomerDto = AdminCustomerDto.toDto(customer);
-
-        return new ResponseEntity<>(adminCustomerDto, HttpStatus.OK);
+        return new ResponseEntity<>(projectDto, headers, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "customers/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AdminCustomerDto> updateCustomer(@RequestBody @Valid AdminCustomerDto adminCustomerDto, @PathVariable("id") Long customerId) {
+    public ResponseEntity<CustomerDto> updateCustomer(@RequestBody @Valid CustomerDto customerDto, @PathVariable("id") Long customerId) {
 
-        if (adminCustomerDto == null || customerId == null) {
+        if (customerDto == null || customerId == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        if (!customerDto.getId().equals(customerId)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Customer customer = this.customerService.findById(customerId);
+
+        if (customer == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         HttpHeaders headers = new HttpHeaders();
-        Customer customer = adminCustomerDto.toEntity();
+        customer = customerDto.toEntity(customer);
 
         this.customerService.save(customer);
 
-        return new ResponseEntity<>(adminCustomerDto, headers, HttpStatus.OK);
+        return new ResponseEntity<>(customerDto, headers, HttpStatus.OK);
     }
 
     @PostMapping(value = "customers", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AdminCustomerDto> createCustomer(@RequestBody @Valid AdminCustomerDto adminCustomerDto) {
+    public ResponseEntity<CustomerDto> createCustomer(@RequestBody @Valid CustomerDto customerDto) {
 
-        if (adminCustomerDto == null) {
+        if (customerDto == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         HttpHeaders headers = new HttpHeaders();
-        Customer customer = adminCustomerDto.toEntity();
-        adminCustomerDto = AdminCustomerDto.toDto(this.customerService.save(customer));
+        Customer customer = customerDto.toEntity();
+        customerDto = CustomerDto.toDto(this.customerService.save(customer));
 
-        return new ResponseEntity<>(adminCustomerDto, headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(customerDto, headers, HttpStatus.CREATED);
     }
 }
