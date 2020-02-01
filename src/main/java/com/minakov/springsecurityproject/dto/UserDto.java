@@ -1,6 +1,8 @@
 package com.minakov.springsecurityproject.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.minakov.springsecurityproject.model.Role;
+import com.minakov.springsecurityproject.model.Skill;
 import com.minakov.springsecurityproject.model.User;
 import lombok.Builder;
 import lombok.Data;
@@ -21,6 +23,7 @@ public class UserDto extends AbstractDto {
     private String firstName;
     private String lastName;
     private String specialty;
+    private String phoneNumber;
     private List<RoleDto> roles;
     private List<SkillDto> skills;
 
@@ -30,6 +33,7 @@ public class UserDto extends AbstractDto {
                    String firstName,
                    String lastName,
                    String specialty,
+                   String phoneNumber,
                    List<RoleDto> roles,
                    List<SkillDto> skills) {
         super(id);
@@ -37,8 +41,29 @@ public class UserDto extends AbstractDto {
         this.firstName = firstName;
         this.lastName = lastName;
         this.specialty = specialty;
+        this.phoneNumber = phoneNumber;
         this.roles = roles;
         this.skills = skills;
+    }
+
+    public User toEntity(User user) {
+        user.setUsername(username);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setSpecialty(specialty);
+        user.setPhoneNumber(phoneNumber);
+        user.setRoles(roles.stream()
+                .map(roleDto -> Role.builder()
+                        .id(roleDto.getId())
+                        .build())
+                .collect(Collectors.toList()));
+        user.setSkills(skills.stream()
+                .map(skillDto -> Skill.builder()
+                        .id(skillDto.getId())
+                        .build())
+                .collect(Collectors.toList()));
+
+        return user;
     }
 
     public static UserDto toDto(User user) {
@@ -48,6 +73,7 @@ public class UserDto extends AbstractDto {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .specialty(user.getSpecialty())
+                .phoneNumber(user.getPhoneNumber())
                 .roles(user.getRoles().stream()
                         .map(RoleDto::toDto)
                         .collect(Collectors.toList()))
