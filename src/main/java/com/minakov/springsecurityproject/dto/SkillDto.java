@@ -17,9 +17,22 @@ public class SkillDto extends AbstractDto {
     private String name;
 
     @Builder
-    public SkillDto(Long id, String name) {
+    public SkillDto(Long id,
+                    String name) {
         super(id);
         this.name = name;
+    }
+
+    public Skill toEntity() {
+        return Skill.builder()
+                .name(name)
+                .build();
+    }
+
+    public Skill toEntity(Skill skill) {
+        skill.setName(name);
+
+        return skill;
     }
 
     public static SkillDto toDto(Skill skill) {
