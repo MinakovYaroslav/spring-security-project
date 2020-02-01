@@ -14,7 +14,6 @@ public interface UserService {
     List<User> findAll();
     User save(User user);
     User registration(User user);
-    Boolean exist(Long userId);
     User findByIdFetchSkills(Long userId);
     List<User> findAllFetchSkills();
 }
