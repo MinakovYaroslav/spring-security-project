@@ -1,25 +1,24 @@
 package com.minakov.springsecurityproject.model;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-import java.time.LocalDateTime;
+import javax.persistence.*;
 import java.util.List;
 
 /**
  * @author Yaroslav Minakov
  */
-
 @Entity
 @Table(name = "roles")
 @Data
-@EqualsAndHashCode(callSuper = true)
-@AllArgsConstructor
 @NoArgsConstructor
-public class Role extends AbstractEntity {
+public class Role {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "name")
     private String name;
@@ -28,25 +27,16 @@ public class Role extends AbstractEntity {
     private List<User> users;
 
     @Builder
-    public Role(Long id,
-                LocalDateTime created,
-                LocalDateTime updated,
-                Boolean status,
-                String name,
-                List<User> users) {
-        super(id, created, updated, status);
+    public Role(Long id, String name) {
+        this.id = id;
         this.name = name;
-        this.users = users;
     }
 
     @Override
     public String toString() {
         return "Role{" +
-                "name='" + name + '\'' +
-                ", id=" + id +
-                ", created=" + created +
-                ", updated=" + updated +
-                ", status=" + status +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 '}';
     }
 }

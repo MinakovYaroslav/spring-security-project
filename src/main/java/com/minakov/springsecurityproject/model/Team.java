@@ -33,9 +33,10 @@ public class Team extends AbstractEntity {
     public Team(Long id,
                 LocalDateTime created,
                 LocalDateTime updated,
-                Boolean status, String name,
-                List<User> users, List<Project> projects) {
-        super(id, created, updated, status);
+                String name,
+                List<User> users,
+                List<Project> projects) {
+        super(id, created, updated);
         this.name = name;
         this.users = users;
         this.projects = projects;
@@ -45,6 +46,7 @@ public class Team extends AbstractEntity {
     public String toString() {
         return "Team{" +
                 "name='" + name + '\'' +
+                ", id=" + id +
                 '}';
     }
 }

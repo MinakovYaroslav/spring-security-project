@@ -37,10 +37,11 @@ public class Project extends AbstractEntity {
     public Project(Long id,
                    LocalDateTime created,
                    LocalDateTime updated,
-                   Boolean status, String name,
-                   BigDecimal budget, List<Team> teams,
+                   String name,
+                   BigDecimal budget,
+                   List<Team> teams,
                    List<Customer> customers) {
-        super(id, created, updated, status);
+        super(id, created, updated);
         this.name = name;
         this.budget = budget;
         this.teams = teams;
@@ -53,9 +54,6 @@ public class Project extends AbstractEntity {
                 "name='" + name + '\'' +
                 ", budget=" + budget +
                 ", id=" + id +
-                ", created=" + created +
-                ", updated=" + updated +
-                ", status=" + status +
                 '}';
     }
 }

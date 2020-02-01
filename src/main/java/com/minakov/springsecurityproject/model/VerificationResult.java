@@ -6,9 +6,7 @@ package com.minakov.springsecurityproject.model;
 public class VerificationResult {
 
     private final String id;
-
     private final String[] errors;
-
     private final boolean valid;
 
     public VerificationResult(String id) {

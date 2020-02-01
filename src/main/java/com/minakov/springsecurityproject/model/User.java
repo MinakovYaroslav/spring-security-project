@@ -9,7 +9,6 @@ import java.util.List;
 /**
  * @author Yaroslav Minakov
  */
-
 @Entity
 @Table(name = "users")
 @Data
@@ -58,7 +57,6 @@ public class User extends AbstractEntity {
     public User(Long id,
                 LocalDateTime created,
                 LocalDateTime updated,
-                Boolean status,
                 String username,
                 String firstName,
                 String lastName,
@@ -69,7 +67,7 @@ public class User extends AbstractEntity {
                 List<Role> roles,
                 List<Skill> skills,
                 List<Team> teams) {
-        super(id, created, updated, status);
+        super(id, created, updated);
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -88,15 +86,10 @@ public class User extends AbstractEntity {
                 "username='" + username + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", speciality='" + specialty + '\'' +
+                ", specialty='" + specialty + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", phoneVerified=" + phoneVerified +
-                ", roles=" + roles +
-                ", skills=" + skills +
                 ", id=" + id +
-                ", created=" + created +
-                ", updated=" + updated +
-                ", status=" + status +
                 '}';
     }
 }
