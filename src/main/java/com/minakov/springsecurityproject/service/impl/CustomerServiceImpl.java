@@ -52,4 +52,11 @@ public class CustomerServiceImpl implements CustomerService {
         log.info("IN findByIdFetchProjects - customer: {} found by id: {}", result, customerId);
         return result;
     }
+
+    @Override
+    public List<Customer> findAllFetchProjects() {
+        List<Customer> result = this.customerRepository.findAllFetchProjects();
+        log.info("IN findAllFetchProjects - customers: {}", result);
+        return result;
+    }
 }
