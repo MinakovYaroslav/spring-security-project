@@ -9,7 +9,6 @@ import lombok.EqualsAndHashCode;
 /**
  * @author Yaroslav Minakov
  */
-
 @EqualsAndHashCode(callSuper = true)
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -18,16 +17,22 @@ public class RoleDto extends AbstractDto {
     private String name;
 
     @Builder
-    public RoleDto(Long id, String name) {
+    public RoleDto(Long id,
+                   String name) {
         super(id);
         this.name = name;
     }
 
-    public Role toEntity(Role role) {
+    public Role toEntity() {
         return Role.builder()
-                .id(id)
                 .name(name)
                 .build();
+    }
+
+    public Role toEntity(Role role) {
+        role.setName(name);
+
+        return role;
     }
 
     public static RoleDto toDto(Role role) {
