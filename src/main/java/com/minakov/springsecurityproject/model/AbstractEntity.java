@@ -5,18 +5,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  * @author Yaroslav Minakov
  */
-
 @MappedSuperclass
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class AbstractEntity implements Serializable {
+public abstract class AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,9 +25,6 @@ public abstract class AbstractEntity implements Serializable {
 
     @Column(name = "updated", insertable = false)
     protected LocalDateTime updated;
-
-    @Column(name = "status")
-    protected Boolean status;
 
     @PrePersist
     public void toCreate() {
