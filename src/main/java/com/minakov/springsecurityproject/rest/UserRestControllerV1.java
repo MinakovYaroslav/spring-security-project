@@ -19,7 +19,10 @@ import java.util.stream.Collectors;
  * @author Yaroslav Minakov
  */
 @RestController
-@RequestMapping("/api/v1/user/")
+@RequestMapping({
+        "/api/v1/user/",
+        "/api/v1/admin/",
+        "/api/v1/moderator/"})
 public class UserRestControllerV1 {
 
     private final UserService userService;
@@ -43,7 +46,7 @@ public class UserRestControllerV1 {
 
     @GetMapping(value = "users", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<UserDto>> getUsers() {
-        List<User> users = this.userService.findAll();
+        List<User> users = this.userService.findAllFetchSkills();
 
         if (users.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -63,7 +66,7 @@ public class UserRestControllerV1 {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        User user = this.userService.findById(userId);
+        User user = this.userService.findByIdFetchSkills(userId);
 
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -109,7 +112,7 @@ public class UserRestControllerV1 {
 
     @GetMapping(value = "teams", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<TeamDto>> getTeams() {
-        List<Team> teams = this.teamService.findAll();
+        List<Team> teams = this.teamService.findAllFetchUsers();
 
         if (teams.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -129,7 +132,7 @@ public class UserRestControllerV1 {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        Team team = this.teamService.findById(teamId);
+        Team team = this.teamService.findByIdFetchUsers(teamId);
 
         if (team == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -142,7 +145,7 @@ public class UserRestControllerV1 {
 
     @GetMapping(value = "projects", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ProjectDto>> getProjects() {
-        List<Project> projects = this.projectService.findAll();
+        List<Project> projects = this.projectService.findAllFetchTeams();
 
         if (projects.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -162,7 +165,7 @@ public class UserRestControllerV1 {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        Project project = this.projectService.findById(projectId);
+        Project project = this.projectService.findByIdFetchTeams(projectId);
 
         if (project == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -175,7 +178,7 @@ public class UserRestControllerV1 {
 
     @GetMapping(value = "customers", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<CustomerDto>> getCustomers() {
-        List<Customer> customers = this.customerService.findAll();
+        List<Customer> customers = this.customerService.findAllFetchProjects();
 
         if (customers.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -195,7 +198,7 @@ public class UserRestControllerV1 {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        Customer customer = this.customerService.findById(customerId);
+        Customer customer = this.customerService.findByIdFetchProjects(customerId);
 
         if (customer == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
