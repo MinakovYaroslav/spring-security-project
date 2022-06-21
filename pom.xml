@@ -18,7 +18,7 @@
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <mysql.connector.version>8.0.15</mysql.connector.version>
+        <mysql.connector.version>8.0.28</mysql.connector.version>
         <jsonwebtoken.version>0.10.7</jsonwebtoken.version>
     </properties>
 
